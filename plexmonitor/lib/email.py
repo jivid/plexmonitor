@@ -1,0 +1,79 @@
+import imaplib  # type: ignore
+from email.message import Message
+from email.parser import Parser
+from typing import Tuple, List, Union, Any
+
+from plexmonitor.settings import IMAP
+
+ImapSearchResponseType = Tuple[str, List[bytes]]
+
+# imaplib.fetch() returns a list of 2 elements:
+#     1. A Tuple of 3 elements:
+#         1.1 bytes
+#         1.2 bytes
+#         1.3 bytes
+#     2. bytes
+# The typing module only allows List to be of a single type. This is perfectly
+# logical, unlike imaplib which is a bunch of dogshit. To avoid this steaming
+# pile of shit, just do List[Any] so that the mixed types are allowed
+ImapFetchResponseType = Tuple[str, List[Any]]
+
+
+class Inbox(object):
+    def __init__(self):
+        self.server = IMAP['server']
+        self.port = IMAP['port']
+        self.email_addr = IMAP['email']
+        self.password = IMAP['password']
+        self.conn = None
+
+    def connect(self):
+        self.conn = imaplib.IMAP4_SSL(self.server, self.port)
+        self.conn.login(self.email_addr, self.password)
+        self.conn.select(readonly=True)
+
+    def __enter__(self):
+        self.connect()
+        return self
+
+    def __exit__(self, *args):
+        pass
+
+    def _decode_fetch_response(self, resp: ImapFetchResponseType) -> Message:
+        """ Take a raw IMAP RFC822 fetch response and decode the data portion
+        """
+        _, data = resp
+        actual_data = data[0][1].decode()  # type: str
+
+        parser = Parser()
+        msg = parser.parsestr(actual_data)
+        return msg
+
+    def _decode_search_response(self, resp: ImapSearchResponseType) -> str:
+        """ Take a raw IMAP search response and decode the data portion
+        """
+        _, data = resp
+        return data[0].decode()
+
+    def fetch(self, mail_id: str) -> Message:
+        resp = self.conn.fetch(mail_id, '(RFC822)')
+        return self._decode_fetch_response(resp)
+
+    def search(self, criteria: List[str]) -> str:
+        """ Perform a search using the supplied search criteria
+        """
+        search_params = ['TO', self.email_addr]
+        search_params.extend(criteria)
+        search_str = ' '.join(search_params)
+
+        resp = self.conn.search(None, search_str)
+        return self._decode_search_response(resp)
+
+    def get_all_unread_mail_ids(self):
+        mail_ids = self.search(['UNSEEN'])
+        mail_ids = mail_ids.split()
+        return mail_ids
+
+    def get_last_unread_mail_id(self):
+        return self.get_all_unread_mail_ids()[-1]
+

@@ -16,18 +16,19 @@ class EmailTask(PeriodicTask):
         super(EmailTask, self).initTask()
         self.inbox = Inbox()
         self.inbox.connect()
-        self.last_mail_id = None
+        self.last_mail_id = None  # type: str
 
-    def execute(self):
+    def execute(self) -> None:
         last_unread = self.inbox.get_last_unread_mail_id()
         last_processed = self.last_mail_id
 
-        if last_processed and last_unread <= last_processed:
+        if last_processed is not None and\
+                int(last_unread) <= int(last_processed):
             self.logger.info("Nothing to fetch")
             return
 
-        self.logger.info("Going to fetch mail ID %s" % last_unread)
-        mail = self.inbox.fetch(last_unread)
+        self.logger.info("Going to fetch mail ID {}".format(last_unread))
+        mail = self.inbox.fetch(last_unread)  # type: email.message.Message
         self.last_mail_id = last_unread
 
         cmd = mail.get('Subject')

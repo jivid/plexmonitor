@@ -21,11 +21,11 @@ ImapFetchResponseType = Tuple[str, List[Any]]
 
 class Inbox(object):
     def __init__(self):
-        self.server = IMAP['server']
-        self.port = IMAP['port']
-        self.email_addr = IMAP['email']
-        self.password = IMAP['password']
-        self.conn = None
+        self.server = IMAP['server']      # type: str
+        self.port = IMAP['port']          # type: int
+        self.email_addr = IMAP['email']   # type: str
+        self.password = IMAP['password']  # type: str
+        self.conn = None                  # type: imaplib.IMAP4_SSL
 
     def connect(self):
         self.conn = imaplib.IMAP4_SSL(self.server, self.port)
@@ -69,11 +69,11 @@ class Inbox(object):
         resp = self.conn.search(None, search_str)
         return self._decode_search_response(resp)
 
-    def get_all_unread_mail_ids(self):
+    def get_all_unread_mail_ids(self) -> List[str]:
         mail_ids = self.search(['UNSEEN'])
         mail_ids = mail_ids.split()
         return mail_ids
 
-    def get_last_unread_mail_id(self):
+    def get_last_unread_mail_id(self) -> str:
         return self.get_all_unread_mail_ids()[-1]
 

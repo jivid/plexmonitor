@@ -7,7 +7,8 @@ from plexmonitor.settings import IMAP
 
 ImapSearchResponseType = Tuple[str, List[bytes]]
 
-# imaplib.fetch() returns a list of 2 elements:
+# imaplib.fetch() returns a list of 2 elements, the second element is a list
+# containing:
 #     1. A Tuple of 3 elements:
 #         1.1 bytes
 #         1.2 bytes
@@ -19,7 +20,9 @@ ImapSearchResponseType = Tuple[str, List[bytes]]
 ImapFetchResponseType = Tuple[str, List[Any]]
 
 
-class Inbox(object):
+class Inbox:
+    """ Interface with an IMAP inbox
+    """
     def __init__(self):
         self.server = IMAP['server']      # type: str
         self.port = IMAP['port']          # type: int
@@ -28,6 +31,8 @@ class Inbox(object):
         self.conn = None                  # type: imaplib.IMAP4_SSL
 
     def connect(self):
+        """ Instantiate an IMAP SSL connection as read only
+        """
         self.conn = imaplib.IMAP4_SSL(self.server, self.port)
         self.conn.login(self.email_addr, self.password)
         self.conn.select(readonly=True)
@@ -60,7 +65,8 @@ class Inbox(object):
         return self._decode_fetch_response(resp)
 
     def search(self, criteria: List[str]) -> str:
-        """ Perform a search using the supplied search criteria
+        """ Perform a search using the supplied search criteria. This method
+        applies criteria only to the address specified in the settings file
         """
         search_params = ['TO', self.email_addr]
         search_params.extend(criteria)

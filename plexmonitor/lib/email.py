@@ -7,8 +7,7 @@ from plexmonitor.settings import IMAP
 
 ImapSearchResponseType = Tuple[str, List[bytes]]
 
-# imaplib.fetch() returns a list of 2 elements, the second element is a list
-# containing:
+# imaplib.fetch() returns a tuple, the second element is a list containing:
 #     1. A Tuple of 3 elements:
 #         1.1 bytes
 #         1.2 bytes

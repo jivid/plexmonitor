@@ -30,10 +30,13 @@ class Command:
         if not match:
             return None
 
-        action = match.group('action').strip()
-        sender = get_sender_email(mail)
-        context = {'sender': sender}
+        try:
+            sender = get_sender_email(mail)
+        except Exception:
+            return None
 
+        action = match.group('action').strip()
+        context = {'sender': sender}
         return cls(action, context)
 
     @classmethod

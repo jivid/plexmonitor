@@ -24,8 +24,13 @@ def get_sender_email(mail: Message) -> str:
     """ Retrieve the sender's email address from a Message object
     """
     sender_pattern = re.compile("^(?P<name>.*)\s<(?P<email>.*)>$")
-    from_header = mail.get('From')  # type: str
-    return sender_pattern.match(from_header).group('email')
+    from_header = mail['From']  # type: str
+
+    sender = sender_pattern.match(from_header)
+    if not sender:
+        raise KeyError("Invalid From header on email")
+
+    return sender.group('email')
 
 
 class Inbox:

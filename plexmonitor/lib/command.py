@@ -21,7 +21,7 @@ class Command:
         self.context = context
 
     @classmethod
-    def from_email(cls, mail: Message) -> None:
+    def from_email(cls, mail: Message) -> Union[None, Command]:
         subject = mail.get('Subject')  # type: str
         if not subject:
             return None

@@ -90,8 +90,7 @@ class Inbox:
 
     def get_all_unread_mail_ids(self) -> List[str]:
         mail_ids = self.search(['UNSEEN'])
-        mail_ids = mail_ids.split()
-        return mail_ids
+        return mail_ids.split()
 
     def get_last_unread_mail_id(self) -> str:
         return self.get_all_unread_mail_ids()[-1]

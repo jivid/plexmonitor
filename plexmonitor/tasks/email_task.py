@@ -1,5 +1,6 @@
 from sparts.tasks.periodic import PeriodicTask
 
+from plexmonitor.lib.command import Command
 from plexmonitor.lib.email import Inbox
 
 
@@ -31,5 +32,11 @@ class EmailTask(PeriodicTask):
         mail = self.inbox.fetch(last_unread)  # type: email.message.Message
         self.last_mail_id = last_unread
 
-        cmd = mail.get('Subject')
-        self.logger.info("Got email with subject {}".format(cmd))
+        cmd = Command.from_email(mail)
+        if not cmd:
+            self.logger.info("No valid command")
+            return
+
+        self.logger.info("Got command {action} from {sender}"
+                         .format(action=cmd.action,
+                                 sender=cmd.context['sender']))

@@ -32,7 +32,7 @@ class CommandTest(unittest.TestCase):
         self.assertIsNone(cmd)
 
     def test_from_email_invalid_command(self):
-        """ Thest that an invalid command in the subject line just returns None
+        """ Test that an invalid command in the subject line just returns None
         """
         mail = {'Subject': 'foo bar'}
         cmd = Command.from_email(mail)

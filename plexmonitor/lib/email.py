@@ -1,4 +1,5 @@
 import imaplib  # type: ignore
+import re
 from email.message import Message
 from email.parser import Parser
 from typing import Tuple, List, Union, Any
@@ -17,6 +18,19 @@ ImapSearchResponseType = Tuple[str, List[bytes]]
 # logical, unlike imaplib which is a bunch of dogshit. To avoid this steaming
 # pile of shit, just do List[Any] so that the mixed types are allowed
 ImapFetchResponseType = Tuple[str, List[Any]]
+
+
+def get_sender_email(mail: Message) -> str:
+    """ Retrieve the sender's email address from a Message object
+    """
+    sender_pattern = re.compile("^(?P<name>.*)\s<(?P<email>.*)>$")
+    from_header = mail['From']  # type: str
+
+    sender = sender_pattern.match(from_header)
+    if not sender:
+        raise KeyError("Invalid From header on email")
+
+    return sender.group('email')
 
 
 class Inbox:
@@ -76,8 +90,7 @@ class Inbox:
 
     def get_all_unread_mail_ids(self) -> List[str]:
         mail_ids = self.search(['UNSEEN'])
-        mail_ids = mail_ids.split()
-        return mail_ids
+        return mail_ids.split()
 
     def get_last_unread_mail_id(self) -> str:
         return self.get_all_unread_mail_ids()[-1]

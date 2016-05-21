@@ -61,7 +61,7 @@ target/
 .ipynb_checkpoints
 
 # Project specific stuff
-plexmonitor/settings_prod.py
+plexmonitor/settings/settings_prod.py
 plexmonitor.db.json
 
 # Virtualenv

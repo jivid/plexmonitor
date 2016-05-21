@@ -27,5 +27,5 @@ class PlexMonitorService(VService):
         captureWarnings(True)
 
 
-if __name__ == '__main__':
+def main():
     PlexMonitorService.initFromCLI()

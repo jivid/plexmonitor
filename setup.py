@@ -11,7 +11,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'plexmonitor = plexmonitor.app',
+            'plexmonitor = plexmonitor.app:main',
         ],
     },
 )

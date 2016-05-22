@@ -1,4 +1,5 @@
-from sparts.tasks.periodic import PeriodicTask
+import email
+from sparts.tasks.periodic import PeriodicTask  # type: ignore
 
 from plexmonitor.lib.command import Command
 from plexmonitor.lib.email import Inbox

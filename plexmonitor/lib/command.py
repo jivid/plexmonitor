@@ -52,4 +52,3 @@ class Command:
 
     def __repr__(self):
         return str(self)
-

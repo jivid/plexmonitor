@@ -2,8 +2,8 @@ import logging
 import sys
 from functools import partial
 
-from sparts.vservice import VService
-from sparts.compat import captureWarnings
+from sparts.vservice import VService  # type: ignore
+from sparts.compat import captureWarnings  # type: ignore
 
 from plexmonitor.tasks.email_task import EmailTask
 
@@ -27,4 +27,5 @@ class PlexMonitorService(VService):
         captureWarnings(True)
 
 
-PlexMonitorService.initFromCLI()
+def main():
+    PlexMonitorService.initFromCLI()

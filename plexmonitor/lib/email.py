@@ -4,7 +4,7 @@ from email.message import Message
 from email.parser import Parser
 from typing import Tuple, List, Union, Any
 
-from plexmonitor.settings import IMAP
+from plexmonitor import settings
 
 ImapSearchResponseType = Tuple[str, List[bytes]]
 
@@ -37,11 +37,11 @@ class Inbox:
     """ Interface with an IMAP inbox
     """
     def __init__(self):
-        self.server = IMAP['server']      # type: str
-        self.port = IMAP['port']          # type: int
-        self.email_addr = IMAP['email']   # type: str
-        self.password = IMAP['password']  # type: str
-        self.conn = None                  # type: imaplib.IMAP4_SSL
+        self.server = settings.IMAP['server']      # type: str
+        self.port = settings.IMAP['port']          # type: int
+        self.email_addr = settings.IMAP['email']   # type: str
+        self.password = settings.IMAP['password']  # type: str
+        self.conn = None                           # type: imaplib.IMAP4_SSL
 
     def connect(self):
         """ Instantiate an IMAP SSL connection as read only
@@ -94,4 +94,3 @@ class Inbox:
 
     def get_last_unread_mail_id(self) -> str:
         return self.get_all_unread_mail_ids()[-1]
-

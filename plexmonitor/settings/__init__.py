@@ -8,4 +8,3 @@ else:
     settings = importlib.import_module('plexmonitor.settings.github')
 
 globals().update(settings.__dict__)
-
